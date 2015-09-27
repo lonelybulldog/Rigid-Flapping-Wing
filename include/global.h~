@@ -1,0 +1,272 @@
+#ifndef GLOBAL_H
+#define GLOBAL_H
+
+#define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
+
+static double dmaxarg1,dmaxarg2;
+#define DMAX(a,b) (dmaxarg1=(a),dmaxarg2=(b),(dmaxarg1) > (dmaxarg2) ?\
+(dmaxarg1) : (dmaxarg2))
+
+static int iminarg1,iminarg2;
+#define IMIN(a,b) (iminarg1=(a),iminarg2=(b),(iminarg1) < (iminarg2) ?\
+(iminarg1) : (iminarg2))
+
+#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
+
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#define ABS(a,b) ((a)>0?(a):-(a))
+
+#include "basis.h"
+#include "svd.h"
+#include "frame_structure.h"
+#include "insect_parameters.h"
+#include "control_module.h"
+#include "flap_pattern.h"
+
+vector<Meshless_Member> Meshless_Member_List;
+
+int    Isq, Jsq, Ksq, NumIsq, NumJsq, NumKsq;
+double Xsq, Ysq, Zsq, XLsq, YLsq, ZLsq;
+int    Drawer_Number;
+int    Isq_Dr, Jsq_Dr, Ksq_Dr;
+double Xsq_Dr, Ysq_Dr, Zsq_Dr;
+
+int    IJK_Pressure_Ref;
+
+int    FSI=1,FSI_Iter,FSI_Max=5;
+double FSI_Eps=1e-2;
+double FSI_Eps_Position,FSI_Eps_Angle,FSI_Eps_Momentum,FSI_Eps_Angular_Momentum;
+
+int    Solver_Choice;
+int    RECORD;
+ofstream outforce;
+ofstream outpv;
+ofstream trajectory;
+
+//Name for the simulation
+char   Name[30], Open_Name[50], number[15], Name_Grd[20];
+double Ch_Num;
+
+//Domain information   
+int    Point_All;
+double *X, *Y, *Z, *MeshAll_Cord[3];
+double *Fcx, *Fcy, *Fcz;
+double XL, YL, ZL, Deltx, Deltx2;
+int  *GType1, *GType2, *GTypeT;
+
+double Obj_XYZ[3],Obj_P[3],Obj_L[3],Obj_Orien[3][3];
+double Car_Ale[3],Car_Ale_Old[3];
+double bodycentre_old[3]={8,8,8};
+double bodycentre[3]={8,8,8};
+double bodycentre_tmp[3]={8,8,8};
+double Car_ACC[3],Car_ACC_Old[3];
+
+double RF[4]={1,1,1,1},RF_Old[4]={1,1,1,1},RF_Max=1.0;
+double RF_Residual[4][3],RF_Residual_Old[4][3];
+
+
+//Cartesian Coordinates
+int    IPoint, JPoint, KPoint, Point_Car;
+int    *IIndex, *JIndex;
+int    NType0=0;  //No. of Type 0 Nodes in Cartesian Nodes
+int    NC2M=0;    //No. of Type 3 Nodes in Cartesian Nodes
+int    NType4=0;  //No. of Type 4 Nodes in Cartesian Nodes
+double *MeshCar_Cord[3];
+
+
+//Meshless Grid Points: global view
+int    Point_Meshless;
+double *X_Meshless_Old, *Y_Meshless_Old, *Z_Meshless_Old, 
+       *X_Meshless, *Y_Meshless, *Z_Meshless;	   
+double  ***Csvd, ***Csvd_Old, *Csvd_star;
+int **Nb_Points, **Nb_Points_Old, *Nb_Points_star;
+
+
+//from the view of No. of Objectives
+int    Rigid_Object_Number=3;   
+int    *Rigid_Offset, *Body_Offset,	*Outer_Offset;
+int    *PointCategory;
+
+
+int    *BNI, *ONI;
+double *Surf_Ele_Area;
+
+double *MNx, *MNy, *MNz, *MNx_Orig, *MNy_Orig, *MNz_Orig;
+int    Total_Body_Nodes, Total_Outer_Nodes;
+
+
+
+//Aux Parameters
+int GlobalInt;
+double Aux_Phi0, Aux_Theta0, Aux_Psi0;
+
+//Artificial Viscosities
+int	AD;
+int	CSVD, CPM, CLD, COP;
+int	NSS;
+double AD_Beta=50, AD_Alfa=5;
+
+
+//Solver
+double *U, *V, *W, *P, *Ustar, *Vstar, *Wstar, *So, *U_Old, *V_Old, *W_Old, *P_Old;
+double *So_U, *So_V, *So_W;
+// double *DUX_s,*DUY_s,*DUZ_s;
+double *DPX, *DPY, *DPZ, *DUX, *DUY, *DUZ;
+int    *Drawer_Count, **Drawer;
+int    Drawer_Member=8;
+
+//int    NF_MAX=4;
+double *F0[NF_MAX], *F1[NF_MAX], *F2[NF_MAX], Res[NF_MAX];
+int    IU=0, IV=1, IW=2, IP=3;
+
+double *U_Ale, *V_Ale, *W_Ale;
+double *U_Ale_Old, *V_Ale_Old, *W_Ale_Old;
+
+double *ACCX_Ale,*ACCY_Ale,*ACCZ_Ale;
+double *ACCX_Ale_Old,*ACCY_Ale_Old,*ACCZ_Ale_Old;
+//ALE flag
+int ALE;
+
+//time step
+int    Time_Current, Time_Start, Time_End, Time_Step, Time_Scheme;
+int    Time_Begin_Save, Time_Save_Freq, Time_Plain_Test;
+int	   Car_Save_Freq, Square_Save_Freq, Meshless_Save_Freq, Body_Save_Freq;
+int	   CheckPoint_Freq;
+double Time=0, Dt;
+
+// Dimensionless Number
+//double Re, Frequency, Gravity;
+double Re;
+
+string Processor;
+
+double CoM[3],CoM_Global[3], Wing_Root[3];
+double bodyforce[3]={0}, bodytorque[3]={0};
+double wing1force[3]={0}, wing1torque[3]={0};
+double wing2force[3]={0}, wing2torque[3]={0};
+
+Ref_Frame lab,insect,wing_1,wing_2, wingplane_1, wingplane_2;
+Insect_Module insect_parameters;
+
+FlapPattern my_flap_pattern;
+//PID control part:
+//int Check_Frequency_Re=500;
+//int Check_Frequency_Angle=500;
+//short *Modify_mark=new short [1000];
+//double lastbodycentre[3];
+//PID_Control_Module X_controller, Y_controller, Z_controller, V_controller, Orientation_controller, Roll_controller, Yaw_controller;
+
+
+//Pressure piossion equation
+double Res_PP;
+int    Max_N_PP;
+double Fp = 1.0;
+
+//Projection Method
+int PM_Iter;
+int ifs;
+
+
+double Eff_Rad=1.4;
+double  GFactor=0.18;
+int Test_Depth=3;
+
+int Test =0;
+
+int  output_redir=1;
+char Dirs[50];
+
+
+double KinematicsPattern;
+//General Kinematic Parameters for Symmetrical flapping
+double DKS_Tr;
+double StrokeAngle, PitchAngle;
+
+ifstream readp;
+int No_Cpu;
+int No_N;
+// Output and Read Control Parameters
+int TestMode;
+int LPlot, LWrite, LRead;
+//LPlot: '1'  plot on screen, '0' donot plot on screen
+//LWrite: '1' write to data file, '0' not write to data file
+//LRead:  '1' Read previous results, '0' new simulation
+ofstream Info, Conv;
+double *showindex;
+
+int *count_mark;
+double *resP;
+
+
+//linklist.cpp
+void Copy_New2Old_C2M();
+void Insert_CarPoint(int i);
+void Del_OldFSI();
+void Fresh_Node();
+void Update_UT();
+
+//bicgstab.cu
+void BICGSTAB_Solver_GPU(DeviceValueArrayView& x, DeviceValueArrayView& b);
+void BICGSTAB_Solver_GPU2(DeviceValueArrayView& x, DeviceValueArrayView& b);
+void BICGSTAB_Solver_CPU();
+
+//basis.cpp
+
+//svd.cpp
+
+//wing_kinematics.cpp
+
+//write_result.cpp
+void Write_Result_PLT(int it);
+void Write_Result_DAT(int it);
+
+//check_point.cpp
+int Write_Check_Point(int it);
+int Read_Check_Point(char dataname[], char infoname[]);
+
+
+void User(const char auxp[]);
+void Set_Para(void);
+void Memory_Allocate(void);
+void Memory_Free();
+void Grid(void);
+void Get_Meshless(void);
+
+void Cont_Car_Old();
+void Cont_ML_Old();
+void Force_Estimate();
+void Initial_Guess();
+void Solve_Structure_Problem();
+void Update_Structrue_value();
+double RF_Recursion(double lastrf, double *rold, double *rnew);
+void Compute_Relaxation_Factor(int FSI_Iter);
+int Check_FSI_REL();
+int Check_FSI_ABS();
+
+void PM(DeviceValueArrayView x, DeviceValueArrayView b);
+void Init(char chpname[]);
+void Grad_Fi(double*, int, int, double, double*, double*, double*, double*);
+void Reset(double*, int);
+void Residual(void);
+double Solver_SOR(double*, double, int, double*);
+void Output(int);
+void Search_Type0(int, int, int, int, int);
+void Find_Supporting_Points(int);
+void QuickSort(double*, int*, int, int);
+void Boundary_UVW(void);
+//void svdcmp(double **a, int m, int n, double *w, double **v);
+//double pythag(double a, double b);
+//void svdcmp(double **A,int M,int N,double **V,double **SIGMA_plus,double **UT);
+void Cal_CdCl(int, double);
+void Node_Select(int, int*, int, int*, double*, int*);
+void Motion(double,int);
+
+/*GPU related variables*/
+
+double *device_x, *device_b;
+int    *IIndex_dev,*JIndex_dev, *BNI_dev, *count_mark_dev, *GType2_dev, *Nb_Points_dev;
+double *Fcx_dev, *Fcy_dev, *Fcz_dev, *MNx_dev, *MNy_dev, *MNz_dev, *Csvd_dev;
+
+
+#endif /* GLOBAL_H */
